@@ -1,0 +1,19 @@
+name: Docker-based DevSecOps Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Checkout code
+        uses: actions/checkout@v4
+
+      - name: 2. Build image and run SCA scan
+        # Ten krok uruchamia budowanie obrazu. Jeśli jakikolwiek
+        # krok w Dockerfile się nie powiedzie, ten krok też się nie powiedzie.
+        run: docker build .
