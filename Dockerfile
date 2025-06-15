@@ -1,21 +1,22 @@
-# --- Etap 1: Skaner ---
+# --- Etap 1: Skaner (Ten etap uruchomi skany) ---
 # Nazwiemy ten etap 'scanner', aby móc się do niego odwoływać
 FROM python:3.9-slim AS scanner
 
 WORKDIR /app
 
-# Skopiuj tylko plik z zależnościami, aby wykorzystać cache'owanie warstw
+# Skopiuj tylko plik z zależnościami, aby zainstalować narzędzia
 COPY requirements.txt .
 
 # Zainstaluj zależności aplikacji ORAZ nasze narzędzie do skanowania
 RUN pip install -r requirements.txt
 RUN pip install pip-audit
 
+# --- NAJWAŻNIEJSZY KROK ---
 # Uruchom skan SCA. Jeśli znajdzie podatności, zakończy się kodem błędu > 0,
 # co spowoduje niepowodzenie całego 'docker build'.
 RUN pip-audit
 
-# --- Etap 2: Finalna Aplikacja ---
+# --- Etap 2: Finalna Aplikacja (Ten etap stworzy finalny, czysty obraz) ---
 # Ten etap zostanie wykonany tylko, jeśli wszystkie kroki w etapie 'scanner' się powiodły.
 FROM python:3.9-slim
 
